@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // MUI Imports
 import Card from '@mui/material/Card'
@@ -21,39 +21,71 @@ import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 const FormLayoutsSeparator = () => {
   // States
   const [formData, setFormData] = useState({
-    bookingNumber: '',
-    siHour: null,
-    contNumber: '',
-    sealNumber: '',
-    maxGrossNumber: '',
-    tareNumber: '',
-    driver: '',
-    grossTareNumber: '',
-    emptyPlace: '',
-    cutStock: '',
+    SO_BOOKING: '',
+    SI_CUT_OFF: null,
+    SO_CONT: '',
+    SO_SEAL: '',
+    SO_MAX_GROSS: '',
+    SO_TARE: '',
+    TAIXE_KEO: '',
+    TL_GROSS: '',
+    NOI_LAY_CONT: '',
+    NOI_DONG_HANG: '',
     note: ''
   })
 
-  const handleClickShowPassword = () => setFormData(show => ({ ...show, isPasswordShown: !show.isPasswordShown }))
+  const fetchData = async () => {
+    let token = ''
+    let recordId = 12998
+    let url = `https://fmapp.vdigitrans.net/fmi/data/v1/databases/TrackingContainer/layouts/PartnerNangCont/records/${recordId}`
 
-  const handleClickShowConfirmPassword = () =>
-    setFormData(show => ({ ...show, isConfirmPasswordShown: !show.isConfirmPasswordShown }))
+    try {
+      let res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      })
+      let resData = await res.json()
 
-  const handleReset = () => {
-    setFormData({
-      bookingNumber: '',
-      siHour: null,
-      contNumber: '',
-      sealNumber: '',
-      maxGrossNumber: '',
-      tareNumber: '',
-      driver: '',
-      grossTareNumber: '',
-      emptyPlace: '',
-      cutStock: '',
-      note: ''
-    })
+      // console.log(resData)
+      let code = resData.messages[0].code
+
+      if (code != 0) {
+        let message = resData.messages[0].message
+
+        alert(message)
+      }
+
+      let fetchData = resData.response.data[0].fieldData
+
+      let data = {
+        SO_BOOKING: fetchData.SO_BOOKING,
+        SI_CUT_OFF: fetchData.SI_CUT_OFF,
+        SO_CONT: fetchData.SO_CONT,
+        SO_SEAL: fetchData.SO_SEAL,
+        SO_MAX_GROSS: fetchData.SO_MAX_GROSS,
+        SO_TARE: fetchData.SO_TARE,
+        TAIXE_KEO: fetchData.TAIXE_KEO,
+        TL_GROSS: fetchData.TL_GROSS,
+        NOI_LAY_CONT: fetchData.NOI_LAY_CONT,
+        NOI_DONG_HANG: fetchData.NOI_DONG_HANG
+      }
+
+      // console.log(data)
+      setFormData({
+        ...formData,
+        ...data
+      })
+    } catch (err) {
+      console.log('fetch error', err)
+    }
   }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
     <Card>
@@ -67,16 +99,16 @@ const FormLayoutsSeparator = () => {
                 fullWidth
                 label='Số Booking'
                 placeholder='SGNE4'
-                value={formData.bookingNumber}
-                onChange={e => setFormData({ ...formData, bookingNumber: e.target.value })}
+                value={formData.SO_BOOKING}
+                onChange={e => setFormData({ ...formData, SO_BOOKING: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <AppReactDatepicker
-                selected={formData.siHour}
+                selected={formData.SI_CUT_OFF}
                 showYearDropdown
                 showMonthDropdown
-                onChange={siHour => setFormData({ ...formData, siHour })}
+                onChange={SI_CUT_OFF => setFormData({ ...formData, SI_CUT_OFF })}
                 placeholderText='MM/DD/YYYY'
                 customInput={<CustomTextField fullWidth label='Giờ si' placeholder='MM-DD-YYYY' />}
               />
@@ -87,8 +119,8 @@ const FormLayoutsSeparator = () => {
                 fullWidth
                 label='Số Cont'
                 placeholder='TIIU4'
-                value={formData.contNumber}
-                onChange={e => setFormData({ ...formData, contNumber: e.target.value })}
+                value={formData.SO_CONT}
+                onChange={e => setFormData({ ...formData, SO_CONT: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -96,8 +128,8 @@ const FormLayoutsSeparator = () => {
                 fullWidth
                 label='Số Seal'
                 placeholder='TIHU4'
-                value={formData.sealNumber}
-                onChange={e => setFormData({ ...formData, sealNumber: e.target.value })}
+                value={formData.SO_SEAL}
+                onChange={e => setFormData({ ...formData, SO_SEAL: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -106,8 +138,8 @@ const FormLayoutsSeparator = () => {
                 label='Số Max Gross'
                 type='number'
                 placeholder='32500'
-                value={formData.maxGrossNumber}
-                onChange={e => setFormData({ ...formData, maxGrossNumber: e.target.value })}
+                value={formData.SO_MAX_GROSS}
+                onChange={e => setFormData({ ...formData, SO_MAX_GROSS: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -116,8 +148,8 @@ const FormLayoutsSeparator = () => {
                 label='Số Tare'
                 type='number'
                 placeholder='5600'
-                value={formData.tareNumber}
-                onChange={e => setFormData({ ...formData, tareNumber: e.target.value })}
+                value={formData.SO_TARE}
+                onChange={e => setFormData({ ...formData, SO_TARE: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -125,8 +157,8 @@ const FormLayoutsSeparator = () => {
                 fullWidth
                 label='Tài xế kéo'
                 placeholder='Lê Hải'
-                value={formData.driver}
-                onChange={e => setFormData({ ...formData, driver: e.target.value })}
+                value={formData.TAIXE_KEO}
+                onChange={e => setFormData({ ...formData, TAIXE_KEO: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -135,8 +167,8 @@ const FormLayoutsSeparator = () => {
                 label='Số Gross(Bao gồm tare)'
                 type='number'
                 placeholder='5600'
-                value={formData.grossTareNumber}
-                onChange={e => setFormData({ ...formData, grossTareNumber: e.target.value })}
+                value={formData.TL_GROSS}
+                onChange={e => setFormData({ ...formData, TL_GROSS: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -144,8 +176,8 @@ const FormLayoutsSeparator = () => {
                 fullWidth
                 label='Nơi lấy rỗng'
                 placeholder='SOWATCO'
-                value={formData.emptyPlace}
-                onChange={e => setFormData({ ...formData, emptyPlace: e.target.value })}
+                value={formData.NOI_LAY_CONT}
+                onChange={e => setFormData({ ...formData, NOI_LAY_CONT: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -153,8 +185,8 @@ const FormLayoutsSeparator = () => {
                 fullWidth
                 label='Cắt kho'
                 placeholder='HƯNG VƯƠNG'
-                value={formData.emptyPlace}
-                onChange={e => setFormData({ ...formData, emptyPlace: e.target.value })}
+                value={formData.NOI_DONG_HANG}
+                onChange={e => setFormData({ ...formData, NOI_DONG_HANG: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={12}>

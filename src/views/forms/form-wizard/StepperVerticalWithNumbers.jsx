@@ -25,7 +25,6 @@ import StepperCustomDotColorBlue from '@components/stepper-dot/StepperCustomDotC
 
 import DropZoneImage from './DropZoneImage'
 
-
 // Vars
 const steps = [
   {
@@ -71,7 +70,6 @@ const StepperVerticalWithNumbers = () => {
   const handleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1)
   }
-
 
   // submit image
   const handleReset = () => {
