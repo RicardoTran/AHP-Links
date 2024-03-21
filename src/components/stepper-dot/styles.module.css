@@ -1,0 +1,18 @@
+.stepperCustomDot {
+  inline-size: 20px;
+  block-size: 20px;
+  border-width: 3px;
+  border-radius: 50%;
+  border-style: solid;
+  border-color: #3C95F4;
+
+  &.activeStepperCustomDot {
+    border-width: 5px;
+    border-color: #3C95F4;
+    background-color:#3C95F4;
+  }
+}
+
+.errorColor {
+  color: #3C95F4;
+}
